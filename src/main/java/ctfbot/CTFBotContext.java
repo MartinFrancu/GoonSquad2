@@ -132,6 +132,19 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
             return false;
         }
     }
+    public boolean SendNewRole(TeamRoles whichRole)
+    {
+        if(tcClient.isConnected())
+        {
+            tcClient.sendToTeamOthers(new RoleMessage(getInfo().getId(), whichRole, System.currentTimeMillis()) );
+            log.log(Level.SEVERE, "TELLING THEM MY NEW ROLE");
+            return true;
+        }else
+        {
+            log.log(Level.SEVERE, "*******************************UNABLE TO SEND MESSAGE (TELLING NEW ROLE)");
+            return false;
+        }
+    }
             
     
     public boolean IntroduceYourSelf()
@@ -181,7 +194,7 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
                 --otherDefendersCount;
                 break;
             case HEAD:
-                this.head = null;
+                this.head = null    ;
                 break;
             case TAIL:
                 // dont care about tails
