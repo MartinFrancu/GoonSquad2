@@ -68,6 +68,7 @@ public class CTFBotLogic extends StateSposhLogicController<UT2004Bot, CTFBotCont
 
     @Override
     public void botKilled(BotKilled event) {
+        context.DealWithBotDeath();
     }
 
     @Override

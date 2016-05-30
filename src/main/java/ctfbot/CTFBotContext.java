@@ -1,9 +1,9 @@
 package ctfbot;
 
-import ctfbot.action.dm.ShootPlayer;
 import ctfbot.tc.CTFCommItems;
 import ctfbot.tc.CTFCommObjectUpdates;
 import ctfbot.tc.GoonSquad.RoleMessage;
+import ctfbot.tc.GoonSquad.RoleRemoved;
 import ctfbot.tc.GoonSquad.TeamRoles;
 import ctfbot.tc.GoonSquad.WhoIsWhoQuery;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
@@ -110,6 +110,29 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
         }
              
     }
+    
+    public void DealWithBotDeath()
+    {// Tell other bots about it:
+        this.SendNotThisRoleAnymore(teamRole);
+        teamRole = TeamRoles.DEFENDER;
+        this.reportedIn = false;
+        this.head = null;
+    }
+    
+    public boolean SendNotThisRoleAnymore(TeamRoles whichRole)
+    {
+        if(tcClient.isConnected())
+        {
+            tcClient.sendToTeamOthers(new RoleRemoved(getInfo().getId(), whichRole, System.currentTimeMillis()) );
+            log.log(Level.SEVERE, "TELLING I AM CHANGING ROLE");
+            return true;
+        }else
+        {
+            log.log(Level.SEVERE, "*******************************UNABLE TO SEND MESSAGE (CHANGING ROLES)");
+            return false;
+        }
+    }
+            
     
     public boolean IntroduceYourSelf()
     {
