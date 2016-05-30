@@ -1,0 +1,9 @@
+(
+	(DC life
+		(drives 
+			  ((DEFENDER (trigger ((ctfbot.sense.ctf.MyRole($role='ctfbot.tc.GoonSquad.TeamRoles.DEFENDER) true ==))) ctfbot.action.dm.RunRandomly))
+			  ((TAIL (trigger ((ctfbot.sense.ctf.MyRole($role='ctfbot.tc.GoonSquad.TeamRoles.TAIL) true ==))) cz.cuni.amis.pogamut.sposh.executor.DoNothing))
+			  ((HEAD (trigger ((ctfbot.sense.ctf.MyRole($role='ctfbot.tc.GoonSquad.TeamRoles.HEAD) true ==))) cz.cuni.amis.pogamut.sposh.executor.DoNothing))
+		)
+	)
+)
