@@ -16,10 +16,24 @@
  */
 package ctfbot.tc.GoonSquad;
 
+import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
+import cz.cuni.amis.pogamut.ut2004.teamcomm.mina.messages.TCMessageData;
+
 /**
  *
  * @author Marci
  */
-public class MarkTarget {
+public class MarkTarget extends TCMessageData{
+
+    public MarkTarget(UnrealId sender, UnrealId target, long time) {
+        this.sender = sender;
+        this.target = target;
+        this.time = time;
+    }
+    public UnrealId sender;
+    public UnrealId target;
+    public long time;
+    
+    
     
 }
