@@ -1,5 +1,6 @@
 package ctfbot;
 
+import ctfbot.action.dm.ShootPlayer;
 import ctfbot.tc.CTFCommItems;
 import ctfbot.tc.CTFCommObjectUpdates;
 import ctfbot.tc.GoonSquad.RoleMessage;
@@ -16,6 +17,7 @@ import cz.cuni.amis.pogamut.ut2004.communication.messages.ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.UT2004ItemType;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Item;
 import cz.cuni.amis.pogamut.ut2004.communication.messages.gbinfomessages.Player;
+import cz.cuni.amis.utils.Cooldown;
 import cz.cuni.amis.utils.flag.FlagListener;
 import java.util.logging.Level;
 
@@ -32,6 +34,16 @@ import java.util.logging.Level;
  * @author Jimmy
  */
 public class CTFBotContext extends UT2004Context<UT2004Bot> {
+    ////////////////////////////////////////////////////////////////////////////
+    // SHOOTING ATRIBUTES:
+    /** Target enemy player we are currently shooting at */
+    public Player targetPlayer = null; 
+    /** This is target of team effort. */
+    public Player teamTargetPlayer = null;
+    /**cooldowns for slow shooting weapons*/
+    public Cooldown rocketLauncherCD = null; 
+    public Cooldown lightingGunCD = null; 
+    public Cooldown sniperRifleCD = null;
     
     
     ////////////////////////////////////////////////////////////////////////////
@@ -56,7 +68,6 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
     }
     
     public String teamRoleString = "DEFENDER";
-    
     
     ///////////////////////////////////////////////////////////////////////////
     // TEAM COMMUNICATION METHODS:
@@ -216,9 +227,7 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
     /** CTF Communication - Choosing Items to Pick Up **/
     public CTFCommItems commItems;
     /** Current item our bot is currently going for */
-    public Item targetItem = null;
-    /** Target enemy player we are currently shooting at */
-    public Player targetPlayer = null;    
+    public Item targetItem = null;    
     /** Used to taboo items we were stuck going for or we have picked up recently */
     public TabooSet<Item> tabooItems;
     
