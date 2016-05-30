@@ -1,13 +1,15 @@
 package ctfbot;
 
-import ctfbot.action.dm.ShootPlayer;
 import ctfbot.tc.CTFCommItems;
 import ctfbot.tc.CTFCommObjectUpdates;
+import ctfbot.tc.GoonSquad.MarkTarget;
+import ctfbot.tc.GoonSquad.MeetUpPointMessage;
 import ctfbot.tc.GoonSquad.RoleMessage;
 import ctfbot.tc.GoonSquad.RoleRemoved;
 import ctfbot.tc.GoonSquad.TeamRoles;
 import ctfbot.tc.GoonSquad.WhoIsWhoQuery;
 import cz.cuni.amis.pogamut.base.communication.worldview.listener.annotation.EventListener;
+import cz.cuni.amis.pogamut.base3d.worldview.object.Location;
 import cz.cuni.amis.pogamut.sposh.context.UT2004Context;
 import cz.cuni.amis.pogamut.unreal.communication.messages.UnrealId;
 import cz.cuni.amis.pogamut.ut2004.agent.module.utils.TabooSet;
@@ -47,11 +49,12 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
     
     
     ////////////////////////////////////////////////////////////////////////////
-    /// TEAM ATRIBUTS:
+    /// TEAM ATRIBUTES:
     public boolean reportedIn = false;
     public Player head = null;
     public int otherDefendersCount = 0;
     public TeamRoles teamRole = TeamRoles.DEFENDER; // three values: DEFENDER, HEAD, TAIL, DONT FORGET TO STING
+    public Location meetUpPoint= null;
 
     public void setTeamRole(TeamRoles teamRoleIn) {
         switch(teamRoleIn)
@@ -156,7 +159,43 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
             return false;
         }
     }
-            
+    
+    public boolean SendMarkPlayer(UnrealId target)
+    {
+        if(tcClient.isConnected())
+        {
+            tcClient.sendToTeamOthers(new MarkTarget(getInfo().getId(), target, System.currentTimeMillis()) );
+            log.log(Level.SEVERE, "SEND MARKPLAYER");
+            return true;
+        }else
+        {
+            log.log(Level.SEVERE, "*******************************UNABLE TO SEND MESSAGE (SEND MARK PLAYER)");
+            return false;
+        }
+    }
+    
+    public boolean SendMeetUpPoint(Location location)
+    { 
+        if(tcClient.isConnected())
+        {
+            tcClient.sendToTeamOthers(new MeetUpPointMessage(getInfo().getId(), location, System.currentTimeMillis()) );
+            log.log(Level.SEVERE, "SEND MEETING POINT");
+            return true;
+        }else
+        {
+            log.log(Level.SEVERE, "*******************************UNABLE TO SEND MESSAGE (SEND MEETING POINT)");
+            return false;
+        }
+    }
+     
+    @EventListener (eventClass = MeetUpPointMessage.class)
+    public void AcknowledgeMeetUpPoint(MeetUpPointMessage msg)
+    {
+        log.log(Level.SEVERE, "ACKNOWLEDGING MEET POINT REPORT:" + msg.location);
+        this.meetUpPoint = msg.location;
+        
+    }
+    
     
     public boolean IntroduceYourSelf()
     {
@@ -191,6 +230,15 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
                 break;
             
         }
+        
+    }
+    
+    
+    @EventListener (eventClass = MarkTarget.class)
+    public void AcknowledgeMarkTarget(MarkTarget msg)
+    {
+        log.log(Level.SEVERE, "ACKNOWLEDGING THE TARGET:" + msg.target);
+        this.teamTargetPlayer = getPlayers().getPlayer(msg.target);
         
     }
     
