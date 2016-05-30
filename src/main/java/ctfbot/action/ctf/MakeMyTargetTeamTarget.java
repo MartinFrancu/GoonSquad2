@@ -45,6 +45,7 @@ public class MakeMyTargetTeamTarget<CONTEXT extends CTFBotContext> extends Param
        if(ctx.targetPlayer != ctx.teamTargetPlayer)
        {
            ctx.SendMarkPlayer(ctx.targetPlayer.getId());
+           ctx.teamTargetPlayer = ctx.targetPlayer;
        }
         
         return ActionResult.FINISHED;
