@@ -170,6 +170,27 @@ public class CTFBotContext extends UT2004Context<UT2004Bot> {
         
     }
     
+      @EventListener (eventClass = RoleRemoved.class)
+    public void AcknowledgeRoleRemoved(RoleRemoved msg)
+    {
+        log.log(Level.SEVERE, "ACKNOWLEDGING THE ROLE REPORT:" + msg.formerRole);
+        switch(msg.formerRole)
+        {
+            case DEFENDER:
+                // new defender:
+                --otherDefendersCount;
+                break;
+            case HEAD:
+                this.head = null;
+                break;
+            case TAIL:
+                // dont care about tails
+                break;
+            
+        }
+        
+    }
+    
     
     ////////////////////////////////////////////////////////////////////////////
     
